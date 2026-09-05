@@ -1,14 +1,14 @@
 """
     Объявление инструмента погоды в запросе к LLM без выполнения его вызова.
 """
+
 import json
 import os
-from pathlib import Path
-from dotenv import load_dotenv
-
-import urllib.request
-import urllib.error
 import shutil
+import urllib.request
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 request_counter = 0
 

@@ -2,15 +2,15 @@
     Выполнение вызова инструмента со случайным прогнозом погоды
     и передача результата в повторном запросе к LLM.
 """
+
 import json
 import os
 import random
-from pathlib import Path
-from dotenv import load_dotenv
-
-import urllib.request
-import urllib.error
 import shutil
+import urllib.request
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 request_counter = 0
 
@@ -46,14 +46,14 @@ def chat_completions_request(payload: dict, save_log: bool = True) -> dict:
     return response
 
 class WeatherTool:
-    def getName(self) -> str:
+    def get_name(self) -> str:
         return "get_weather_tool"
 
-    def getScheme(self) -> dict:
+    def get_schema(self) -> dict:
         return {
             "type": "function",
             "function": {
-                "name": self.getName(),
+                "name": self.get_name(),
                 "description": "Get simulated weather for the specified city using a random preset.",
                 "parameters": {
                     "type": "object",
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     payload = {
         "model": os.environ["MODEL_NAME"],
         "tool_choice": "auto",
-        "tools": [t.getScheme() for t in tools],
+        "tools": [t.get_schema() for t in tools],
         "messages": [
             {
                 "role": "system",
@@ -120,7 +120,7 @@ if __name__ == "__main__":
             tool_args: dict = json.loads(tool_call["function"]["arguments"])
 
             for tool in tools:
-                if tool.getName() == tool_name:
+                if tool.get_name() == tool_name:
                     tool_answer: str = tool(**tool_args)
                     tool_answer_message: dict = {
                         "role": "tool",

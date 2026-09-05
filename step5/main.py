@@ -1,16 +1,16 @@
 """
     Интерактивный агент с инструментами чтения, записи файлов и выполнения Bash-команд.
 """
+
 import json
 import os
+import shutil
 import subprocess
+import urllib.request
 from itertools import islice
 from pathlib import Path
-from dotenv import load_dotenv
 
-import urllib.request
-import urllib.error
-import shutil
+from dotenv import load_dotenv
 
 BOLD = '\033[1m'
 ITALIC = '\033[3m'
@@ -55,14 +55,14 @@ def chat_completions_request(payload: dict, save_log: bool = True) -> dict:
     return response
 
 class ReadFileTool:
-    def getName(self) -> str:
+    def get_name(self) -> str:
         return "read_file_tool"
 
-    def getScheme(self) -> dict:
+    def get_schema(self) -> dict:
         return {
             "type": "function",
             "function": {
-                "name": self.getName(),
+                "name": self.get_name(),
                 "description": "\n".join([
                     "Read a range of lines from a UTF-8 text file",
                     "with aligned, zero-padded absolute line numbers.",
@@ -110,14 +110,14 @@ class ReadFileTool:
             return f"Error reading file: {error}"
 
 class EditFileTool:
-    def getName(self) -> str:
+    def get_name(self) -> str:
         return "edit_file_tool"
 
-    def getScheme(self) -> dict:
+    def get_schema(self) -> dict:
         return {
             "type": "function",
             "function": {
-                "name": self.getName(),
+                "name": self.get_name(),
                 "description": "\n".join([
                     "Edit a UTF-8 text file by replacing exactly one occurrence",
                     "of old_string with new_string.",
@@ -175,14 +175,14 @@ class EditFileTool:
             return f"Error editing file: {error}"
 
 class BashTool:
-    def getName(self) -> str:
+    def get_name(self) -> str:
         return "bash_tool"
 
-    def getScheme(self) -> dict:
+    def get_schema(self) -> dict:
         return {
             "type": "function",
             "function": {
-                "name": self.getName(),
+                "name": self.get_name(),
                 "description": "\n".join([
                     "Execute a Bash command in the current working directory",
                     "with a 60-second timeout.",
@@ -235,7 +235,7 @@ if __name__ == "__main__":
     payload = {
         "model": os.environ["MODEL_NAME"],
         "tool_choice": "auto",
-        "tools": [t.getScheme() for t in tools],
+        "tools": [t.get_schema() for t in tools],
         "messages": [
             {
                 "role": "system",
@@ -271,7 +271,7 @@ if __name__ == "__main__":
                 tool_args: dict = json.loads(tool_call["function"]["arguments"])
 
                 for tool in tools:
-                    if tool.getName() == tool_name:
+                    if tool.get_name() == tool_name:
                         tool_answer: str = tool(**tool_args)
                         print(RED + f"Tool call {tool_name}")
                         tool_answer_message: dict = {
