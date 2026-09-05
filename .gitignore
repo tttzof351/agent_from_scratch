@@ -1,0 +1,11 @@
+__pycache__/
+
+.env
+.env.*
+!.env.example
+
+secrets.json
+response.json
+request.json
+logs/
+demo/
