@@ -273,7 +273,7 @@ if __name__ == "__main__":
                 for tool in tools:
                     if tool.get_name() == tool_name:
                         tool_answer: str = tool(**tool_args)
-                        print(RED + f"Tool call {tool_name}")
+                        print(RED + f"Tool call {tool_name}" + ENDC)
                         tool_answer_message: dict = {
                             "role": "tool",
                             "content": tool_answer,
